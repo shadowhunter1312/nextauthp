@@ -10,6 +10,7 @@ export const authOptions = {
       }),
     // Add other providers as needed
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   // Add configuration for database, session, callbacks, etc.
 };
 
