@@ -12,10 +12,11 @@ export default function Home() {
   }
 
   if (status === "authenticated") {
+    console.log(session.user)
     // Once the session is authenticated, show the user information and the sign-out button
     return (
       <p>
-        Signed in as {session.user.email} <button onClick={() => signOut()}>Sign out</button>
+        Signed in as {session.user.username} <button onClick={() => signOut()}>Sign out</button>
       </p>
     );
   }

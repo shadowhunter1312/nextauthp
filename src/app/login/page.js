@@ -7,7 +7,8 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [username, setEmail] = useState('');
+  const [isLoading, setLoading] = useState(false);
   const [password, setPassword] = useState('');
   const router = useRouter();
   const [error,setError] =useState(null)
@@ -15,7 +16,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     // Validation: Check if any field is empty
-       if (!email || !password  ) {
+       if (!username || !password  ) {
          setError("All fields are required");
          return;
        }
@@ -23,7 +24,7 @@ const Login = () => {
   try { 
     // Use signIn function to initiate local login
     const result = await signIn("credentials", {
-      email,
+      username,
       password,
       redirect: false, // Important: Set redirect to false
     });
@@ -41,12 +42,19 @@ const Login = () => {
   }
   };
 
-  const handleTwitterLogin = (e) => {
+  const handleTwitterLogin = async (e) => {
     e.preventDefault();
-
+try{
+  setLoading(true);
+  await signIn('twitter',{ callbackUrl: '/' });
+} catch(err){
+  setLoading(false)
+} finally{
+  setLoading(false)
+}
     // Implement Twitter login logic here
     // Redirect the user to the Twitter authorization URL
-    signIn('twitter',{ callbackUrl: 'http://localhost:3000/' });
+   
   };
 
   return (
@@ -65,7 +73,7 @@ const Login = () => {
             <input
               type="email"
               name="email"
-              value={email}
+              value={username}
           onChange={(e) => setEmail(e.target.value)}
               id="login-name"
               className="form-control"
@@ -105,12 +113,22 @@ const Login = () => {
           <div className="form-group form-group--sm">
             
        
-              <button className="btn btn-twitter btn-lg btn-icon btn-block" onClick={handleTwitterLogin}>
+              <button disabled={isLoading} className="btn btn-twitter btn-lg btn-icon btn-block" onClick={handleTwitterLogin}>{isLoading && (
+                <svg
+                xmlns='https://www.w3.org/2000/svg'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                className='h-4 w-4 mr-2 custom-loadingsvg animate-spin'><path d='M21 12a9 9 0 1 1-6.219-8.56'/></svg>
+              )}
                 <i className="fab fa-twitter"></i> Sign in via Twitter
               </button>
             </div>
             </form>
-        
+            {error && <small className="block text-red-600">{error}</small>}
         {/* Login Form / End */}
       </div>
     </div></div></div>

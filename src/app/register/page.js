@@ -11,7 +11,7 @@ const RegisterForm = () => {
   const router = useRouter();
   const session = useSession();
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [username, setEmail] = useState('');
 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -53,7 +53,7 @@ const RegisterForm = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !username || !password || !confirmPassword) {
         setMessage("All fields are required");
         return;
       }
@@ -75,7 +75,7 @@ const RegisterForm = () => {
     try {
         const formData = {
             name,
-            email,
+            username,
             
             password
            
@@ -92,7 +92,13 @@ const RegisterForm = () => {
         router.push('/login?success=Account has been created');
       } else {
         const data = await res.json();
-        setMessage(data.message);
+        if (data.message) {
+          console.error('Registration Error:', data.message);
+          setMessage(data.message);
+        } else {
+          console.error('Unexpected response format:', data);
+          setMessage('An unexpected error occurred during registration');
+        }
       }
     } catch (err) {
         console.error('Registration Error:', err);
@@ -124,11 +130,11 @@ const RegisterForm = () => {
           <div className="form-group">
             <label htmlFor="register-name">Your Email</label>
             <input
-                  type="email"
+                  type="username"
                   name="your-email"
                   id="your-email"
                   className="input-text"
-                  value={email}
+                  value={username}
                   onChange={(e) => handleEmailChange(e)}
                   placeholder="Enter Twitter Id"
                   required=""
