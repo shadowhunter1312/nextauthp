@@ -3,5 +3,5 @@ import { NextResponse } from "next/server";
 
 export const GET = async ()=>{
 
-return NextResponse("hy");
+return new NextResponse("hy");
 }
